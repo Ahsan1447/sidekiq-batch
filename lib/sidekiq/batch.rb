@@ -66,10 +66,10 @@ module Sidekiq
 
           Sidekiq.redis do |r|
             r.multi do |pipeline|
-              pipeline.hset(@bidkey, "created_at", @created_at.to_s)
+              pipeline.hset(@bidkey, "created_at", @created_at)
               pipeline.expire(@bidkey, BID_EXPIRE_TTL)
               if parent_bid
-                pipeline.hset(@bidkey, "parent_bid", parent_bid.to_s)
+                pipeline.hset(@bidkey, "parent_bid", parent_bid)
                 pipeline.hincrby("BID-#{parent_bid}", "children", 1)
               end
             end
@@ -177,7 +177,7 @@ module Sidekiq
     def persist_bid_attr(attribute, value)
       Sidekiq.redis do |r|
         r.multi do |pipeline|
-          pipeline.hset(@bidkey, attribute, value.to_s)
+          pipeline.hset(@bidkey, attribute, value)
           pipeline.expire(@bidkey, BID_EXPIRE_TTL)
         end
       end
@@ -247,7 +247,7 @@ module Sidekiq
         already_processed, _, callbacks, queue, parent_bid, callback_batch = Sidekiq.redis do |r|
           r.multi do |pipeline|
             pipeline.hget(batch_key, event_name)
-            pipeline.hset(batch_key, event_name, true.to_s)
+            pipeline.hset(batch_key, event_name, 'true')
             pipeline.smembers(callback_key)
             pipeline.hget(batch_key, "callback_queue")
             pipeline.hget(batch_key, "parent_bid")
