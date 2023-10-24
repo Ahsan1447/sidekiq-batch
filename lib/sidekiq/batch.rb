@@ -177,7 +177,7 @@ module Sidekiq
     def persist_bid_attr(attribute, value)
       Sidekiq.redis do |r|
         r.multi do |pipeline|
-          pipeline.hset(@bidkey, attribute, value)
+          pipeline.hset(@bidkey, attribute, value.to_s)
           pipeline.expire(@bidkey, BID_EXPIRE_TTL)
         end
       end
