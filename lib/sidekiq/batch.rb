@@ -66,7 +66,7 @@ module Sidekiq
 
           Sidekiq.redis do |r|
             r.multi do |pipeline|
-              pipeline.hset(@bidkey, "created_at", @created_at)
+              pipeline.hset(@bidkey, "created_at", @created_at.to_s)
               pipeline.expire(@bidkey, BID_EXPIRE_TTL)
               if parent_bid
                 pipeline.hset(@bidkey, "parent_bid", parent_bid.to_s)
